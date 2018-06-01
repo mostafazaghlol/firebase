@@ -1,5 +1,6 @@
 package com.mostafa.android.firebase;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
             Button remove;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
+    DatabaseReference databaseReference2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference =firebaseDatabase.getReference("message");
+        databaseReference2=firebaseDatabase.getReference("message2");
 
         add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
                 String message=edt.getText().toString();
                 databaseReference.setValue(message);
+                databaseReference2.setValue(message);
             }
         });
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -67,4 +71,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void hi(View view) {
+        Intent intent = new Intent(MainActivity.this,LoginAndRegister.class);
+        startActivity(intent);
+    }
 }
