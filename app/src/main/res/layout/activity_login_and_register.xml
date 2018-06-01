@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:layout_marginRight="2dp"
+    android:layout_marginLeft="2dp"
     tools:context="com.mostafa.android.firebase.LoginAndRegister">
     <TextView
         android:layout_width="match_parent"
@@ -42,6 +44,26 @@
         android:textAllCaps="true"
         android:textStyle="bold"/>
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Username"
+        android:id="@+id/regusername"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Name"
+        android:id="@+id/regName"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Age"
+        android:id="@+id/regAge"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Gender"
+        android:id="@+id/regGender"/>
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -14,7 +14,17 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import butterknife.BindDimen;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -27,7 +37,14 @@ public class LoginAndRegister extends AppCompatActivity {
     EditText LPassword;
     @BindView(R.id.regPassword)
     EditText RPassword;
-
+    @BindView(R.id.regName)
+    EditText Name;
+    @BindView(R.id.regAge)
+    EditText age;
+    @BindView(R.id.regusername)
+    EditText username;
+    @BindView(R.id.regGender)
+    EditText gender;
     @BindView(R.id.BtL)
     Button login;
 
@@ -75,16 +92,47 @@ public class LoginAndRegister extends AppCompatActivity {
         Register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email =REmail.getText().toString().trim();
-                String password = RPassword.getText().toString();
-                mauth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(LoginAndRegister.this, new OnCompleteListener<AuthResult>() {
+                final String email =REmail.getText().toString().trim();
+                final String password = RPassword.getText().toString();
+                final String username1 =username.getText().toString();
+                Query query = FirebaseDatabase.getInstance().getReference().child("User").orderByChild("username").equalTo(username1);
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(!task.isSuccessful()){
-                            Toast.makeText(LoginAndRegister.this, "Error Signup "+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.getChildrenCount()>0){
+                            Toast.makeText(LoginAndRegister.this, "Choose another username", Toast.LENGTH_SHORT).show();
+                        }else{
+                            mauth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(LoginAndRegister.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if(!task.isSuccessful()){
+                                        Toast.makeText(LoginAndRegister.this, "Error Signup "+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        String name=Name.getText().toString();
+                                        String Age=age.getText().toString();
+                                        String Gender= gender.getText().toString();
+                                        String userID= mauth.getCurrentUser().getUid();
+                                        DatabaseReference databaseReference ;
+                                        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                                        databaseReference = firebaseDatabase.getReference().child("User").child(userID);
+                                        Map newpost = new HashMap();
+                                        newpost.put("username",username1);
+                                        newpost.put("name",name);
+                                        newpost.put("Age",Age);
+                                        newpost.put("Gender",Gender);
+                                        databaseReference.setValue(newpost);
+                                    }
+                                }
+                            });
                         }
                     }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
                 });
+
             }
         });
 
